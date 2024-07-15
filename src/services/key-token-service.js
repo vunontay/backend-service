@@ -13,13 +13,6 @@ class KeyTokenService {
         refreshToken,
     }) => {
         try {
-            // const tokens = await keyTokenModel.create({
-            //     user: userId,
-            //     publicKey,
-            //     privateKey,
-            // });
-
-            // return tokens ? tokens.publicKey : null;
             const filter = { user: userId },
                 update = {
                     publicKey,
@@ -41,15 +34,6 @@ class KeyTokenService {
         }
     };
 
-    // static findByUserId = async (userId) => {
-    //     return await keyTokenModel
-    //         .findOne({ user: Types.ObjectId(userId) })
-    //         .lean();
-    // };
-
-    // static removeKeyById = async (id) => {
-    //     return await keyTokenModel.remove(id);
-    // };
     static findByUserId = async (userId) => {
         return await keyTokenModel
             .findOne({ user: new ObjectId(userId) })

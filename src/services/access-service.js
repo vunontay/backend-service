@@ -122,16 +122,14 @@ class AccessService {
     };
 
     static register = async ({ name, email, password }) => {
-        // Kiểm tra xem shop đã tồn tại chưa
+        // Check shop already exists
         const shop = await shopModel.findOne({ email }).lean();
         if (shop) {
             throw new BadRequestError("Shop already registered!");
         }
-
-        // Mã hóa mật khẩu
+        // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
-
-        // Tạo shop mới
+        // Create new shop
         const newShop = await shopModel.create({
             name,
             email,
@@ -143,11 +141,11 @@ class AccessService {
             throw new InternalServerError("Failed to create new shop");
         }
 
-        // Tạo private key và public key
+        // Create public key and private key
         const privateKey = crypto.randomBytes(64).toString("hex");
         const publicKey = crypto.randomBytes(64).toString("hex");
 
-        // Tạo key token
+        // Create token
         const keyStore = await KeyTokenService.createKeyToken({
             userId: newShop._id,
             publicKey,
@@ -158,7 +156,7 @@ class AccessService {
             throw new InternalServerError("Failed to create key token");
         }
 
-        // Tạo token pair
+        // Create token pair
         const tokens = await createTokenPair(
             {
                 userId: newShop._id,
